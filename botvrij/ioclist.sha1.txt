@@ -1,0 +1,25 @@
+# IOClist - sha1 
+#
+# Use these IOCs at your own risk.
+#
+# See : http://www.botvrij.eu
+#
+1f96d15b26416b2c7043ee7172357af3afbb002a # sha1 - AA24-290A Iranian Cyber Actors Brute Force and Credential Access Activity Compromises Critical Infrastructure Organizations (457)
+3d3cdf7cfc881678febcafb26ae423fe5aa4efec # sha1 - AA24-290A Iranian Cyber Actors Brute Force and Credential Access Activity Compromises Critical Infrastructure Organizations (457)
+cb7f96e3c3a22e1221f5ac3061adad4090e3e097 # sha1 - ICS Threat Analysis: New, Experimental Malware Can Kill Engineering Processes (462)
+b73b9dbe2da672f57a12647cf06501af377791f5 # sha1 - ICS Threat Analysis: New, Experimental Malware Can Kill Engineering Processes (462)
+c1430ceb6d4daf7431a2c104739fb66a2033b118 # sha1 - ICS Threat Analysis: New, Experimental Malware Can Kill Engineering Processes (462)
+018944fc47ee2329b23b74da31b19e57373ff539 # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+68b72da59467b1bb477d0c1c5107cee8d9078e7e # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+02d32978543b9dd1303e5b020f52d24d5eaba52e # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+2fb3b8099499fee03ea7064812645ac781afd502 # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+9b2b9a49f52b37927e6a9f4d6ddb180be8169c5f # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+ab65c08da16a45565dba930069b5fc5a56806a4c # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+875dc27963f8679e7d8bf53a7e69966523bc36bc # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+694b1dd3187e876c5743a0e0b83334dbd18ac9eb # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+f5ba545d4a16836756989a3ab32f3f6c5d5ad8ff # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+233029813051d20b61d057ec4a56337e9bec40d2 # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+8361f7dbf81093928da54e3cbc11a0fcc2eeb55a # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+1afdce38af37b9452fb4ac35de9fcecd5629b891 # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+e3da9467d0c89a9312ea199ecc83cddf3607d8b1 # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
+d2c25af9ee6e60a341b0c93dd97566fb532bfbe8 # sha1 - Operation AkaiRyū: MirrorFace invites Europe to Expo 2025 and revives ANEL backdoor (475)
