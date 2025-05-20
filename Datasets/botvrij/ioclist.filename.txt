@@ -1,0 +1,19 @@
+# IOClist - filename 
+#
+# Use these IOCs at your own risk.
+#
+# See : http://www.botvrij.eu
+#
+ShareAudit.exe # filename - AA24-290A Iranian Cyber Actors Brute Force and Credential Access Activity Compromises Critical Infrastructure Organizations (457)
+PIC0502024.jpg.scr # filename - Phorpiex - Downloader Delivering Ransomware (463)
+%COMMON\_APPDATA%\programs\base\_sql.py # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%LOCALAPPDATA%\programs\onedrive\crashreporting.py # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%COMMON\_APPDATA%\python\tools\scripts\help.py # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%COMMON\_APPDATA%\python\tools\scripts\findcolor.py # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%LOCALAPPDATA%\Network\AccessProtection.hta # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%COMMON\_APPDATA%\python\aiopyfix.cp37-win32.pyd # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%COMMON\_APPDATA%\python\tools\scripts\aiopyfix.py # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%LOCALAPPDATA%\verifiedpublisher\certstorecheck.hta # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%COMMON\_APPDATA%\python\lib\mac\synchronizewintime.py # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%COMMON\_APPDATA%\programs\diagsvc.exe # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
+%COMMON\_APPDATA%\drivers\slmgr.vbe # filename - UAC-0063: Cyber Espionage Operation Expanding from Central Asia (464)
