@@ -1,0 +1,61 @@
+services:
+  traefik:
+    image: "traefik"
+    restart: always
+    command:
+      - "--api=true"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
+      - "--certificatesresolvers.mytlschallenge.acme.email=${SSL_EMAIL}"
+      - "--certificatesresolvers.mytlschallenge.acme.storage=/home/grp6/Documents/n8n-project/acme.json"
+    ports:
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/home/grp6/Documents/n8n-project:/home/grp6/Documents/n8n-project"
+
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    user: "1000:1000"
+    ports:
+      - "127.0.0.1:5678:5678"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`${SUBDOMAIN}.${DOMAIN_NAME}`)"
+      - "traefik.http.routers.n8n.tls=true"
+      - "traefik.http.routers.n8n.entrypoints=websecure"
+      - "traefik.http.routers.n8n.tls.certresolver=mytlschallenge"
+      - "traefik.http.middlewares.n8n.headers.SSLRedirect=true"
+      - "traefik.http.middlewares.n8n.headers.STSSeconds=315360000"
+      - "traefik.http.middlewares.n8n.headers.browserXSSFilter=true"
+      - "traefik.http.middlewares.n8n.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.n8n.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.n8n.headers.SSLHost=${DOMAIN_NAME}"
+      - "traefik.http.middlewares.n8n.headers.STSIncludeSubdomains=true"
+      - "traefik.http.middlewares.n8n.headers.STSPreload=true"
+    environment:
+      - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_TUNNEL_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
+      - VUE_APP_URL_BASE_API=https://${SUBDOMAIN}.${DOMAIN_NAME}/
+      - N8N_EMAIL_MODE=smtp
+      - N8N_SMTP_HOST=${SMTP_HOST}
+      - N8N_SMTP_PORT=587
+      - N8N_SMTP_USER=${SMTP_USER}
+      - N8N_SMTP_PASS=${SMTP_PASSWORD}
+      - N8N_SMTP_SENDER=${SMTP_SENDER}
+      - N8N_SMTP_SECURE=false  # Must be false for STARTTLS on port 587
+      - N8N_SMTP_IGNORE_TLS=false
+      - N8N_SMTP_REQUIRE_TLS=true
+      - N8N_MFA_ENABLED=true
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_ADMIN_EMAIL}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_ADMIN_PASSWORD}
+    volumes:
+      - "/home/grp6/Documents/n8n-project:/home/node/.n8n"
