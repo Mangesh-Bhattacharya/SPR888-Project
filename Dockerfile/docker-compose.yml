@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   n8n:
-    image: n8nio/n8n
+    image: n8nio/n8n:latest
     restart: unless-stopped
     user: "1000:1000"
     ports:
@@ -17,10 +15,10 @@ services:
       - NODE_ENV=production
       - N8N_DISABLE_PRODUCTION_MAIN_PAGE=true
       - N8N_SECURE_COOKIE=true
-      - N8N_SESSION_LIFETIME=86400  # 24 hours
+      - N8N_SESSION_LIFETIME=86400
       - N8N_USER_MANAGEMENT_DISABLED=false
       - N8N_MFA_ENABLED=true
-      - GENERIC_TIMEZONE=${TZ}
+      - TZ=${TZ:-UTC}
       
       # Webhook Configuration
       - WEBHOOK_TUNNEL_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
@@ -28,19 +26,19 @@ services:
       
       # Authentication
       - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_ADMIN_EMAIL}
+      - N8N_BASIC_AUTH_USER=${N8N_ADMIN_USER:-admin}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_ADMIN_PASSWORD}
       
       # Email Configuration
       - N8N_EMAIL_MODE=smtp
       - N8N_SMTP_HOST=${SMTP_HOST}
-      - N8N_SMTP_PORT=587
+      - N8N_SMTP_PORT=${SMTP_PORT:-587}
       - N8N_SMTP_USER=${SMTP_USER}
       - N8N_SMTP_PASS=${SMTP_PASSWORD}
       - N8N_SMTP_SENDER=${SMTP_SENDER}
-      - N8N_SMTP_SECURE=false  # Must be false for STARTTLS on port 587
-      - N8N_SMTP_IGNORE_TLS=false
-      - N8N_SMTP_REQUIRE_TLS=true
+      - N8N_SMTP_SECURE=${SMTP_SECURE:-false}
+      - N8N_SMTP_IGNORE_TLS=${SMTP_IGNORE_TLS:-false}
+      - N8N_SMTP_REQUIRE_TLS=${SMTP_REQUIRE_TLS:-true}
     
     # Security Hardening
     security_opt:
@@ -49,7 +47,7 @@ services:
       - ALL
     read_only: true
     tmpfs:
-      - /tmp:rw,noexec,nosuid
+      - /tmp:rw,noexec,nosuid,size=64M
     
     # Proper Volume Mounts
     volumes:
@@ -61,5 +59,5 @@ volumes:
   n8n_data:
     driver_opts:
       type: none
-      device: /home/grp6/Documents/n8n-project
+      device: /home/grp6/Documents/spr888-proj
       o: bind
