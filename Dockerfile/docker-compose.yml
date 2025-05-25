@@ -1,63 +1,35 @@
+version: '3.8'
+
 services:
+  # N8N Workflow Automation
   n8n:
-    image: n8nio/n8n:latest
+    image: n8nio/n8n
+    container_name: n8n
     restart: unless-stopped
-    user: "1000:1000"
     ports:
-      - "127.0.0.1:5678:5678"
+      - "5678:5678"
     environment:
-      # Domain Configuration
-      - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
+      - N8N_HOST=localhost
       - N8N_PORT=5678
-      - N8N_PROTOCOL=https
-      
-      # Security Hardening
       - NODE_ENV=production
-      - N8N_DISABLE_PRODUCTION_MAIN_PAGE=true
-      - N8N_SECURE_COOKIE=true
-      - N8N_SESSION_LIFETIME=86400
-      - N8N_USER_MANAGEMENT_DISABLED=false
-      - N8N_MFA_ENABLED=true
-      - TZ=${TZ:-UTC}
-      
-      # Webhook Configuration
-      - WEBHOOK_TUNNEL_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
-      - VUE_APP_URL_BASE_API=https://${SUBDOMAIN}.${DOMAIN_NAME}/
-      
-      # Authentication
       - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_ADMIN_USER:-admin}
+      - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD=${N8N_ADMIN_PASSWORD}
-      
-      # Email Configuration
-      - N8N_EMAIL_MODE=smtp
-      - N8N_SMTP_HOST=${SMTP_HOST}
-      - N8N_SMTP_PORT=${SMTP_PORT:-587}
-      - N8N_SMTP_USER=${SMTP_USER}
-      - N8N_SMTP_PASS=${SMTP_PASSWORD}
-      - N8N_SMTP_SENDER=${SMTP_SENDER}
-      - N8N_SMTP_SECURE=${SMTP_SECURE:-false}
-      - N8N_SMTP_IGNORE_TLS=${SMTP_IGNORE_TLS:-false}
-      - N8N_SMTP_REQUIRE_TLS=${SMTP_REQUIRE_TLS:-true}
-    
-    # Security Hardening
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid,size=64M
-    
-    # Proper Volume Mounts
     volumes:
       - n8n_data:/home/node/.n8n
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+
+  # Ollama LLM Service
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
 
 volumes:
   n8n_data:
-    driver_opts:
-      type: none
-      device: /home/grp6/Documents/spr888-proj
-      o: bind
+  ollama_data:
