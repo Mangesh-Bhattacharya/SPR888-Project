@@ -27,6 +27,69 @@ def save_findings(ioc_type: str, ioc_value: str, source: str, result: str):
             _csv_initialized = True
         writer.writerow([ioc_type, ioc_value, source, result])
 
+#ThreatFox IP Checking
+def query_threatfox_ip(ip_address: str) -> str:
+    tf_api_key = os.getenv("TF_API_KEY")
+    if not tf_api_key:
+        raise ValueError("ThreatFox API Key not found in environment variables.")
+
+    url = "https://threatfox-api.abuse.ch/api/v1/"
+    headers = {
+        "Auth-Key": tf_api_key
+    }
+    data = {
+        "query": "search_ioc",
+        "search_term": ip_address,
+        "exact_match": True
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    result = response.text
+    save_findings("IP", ip_address, "ThreatFox", result)
+    return result
+
+#ThreatFox Domain checking
+def query_threatfox_domain(domain: str) -> str:
+    tf_api_key = os.getenv("TF_API_KEY")
+    if not tf_api_key:
+        raise ValueError("ThreatFox API Key not found in environment variables.")
+
+    url = "https://threatfox-api.abuse.ch/api/v1/"
+    headers = {
+        "Auth-Key": tf_api_key
+    }
+    data = {
+        "query": "search_ioc",
+        "search_term": domain,
+        "exact_match": True
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    result = response.text
+    save_findings("Domain", domain, "ThreatFox", result)
+    return result
+
+#ThreatFox Hash checking
+def query_threatfox_hash(hash_value: str) -> str:
+    tf_api_key = os.getenv("TF_API_KEY")
+    if not tf_api_key:
+        raise ValueError("ThreatFox API Key not found in environment variables.")
+
+    url = "https://threatfox-api.abuse.ch/api/v1/"
+    headers = {
+        "Auth-Key": tf_api_key
+    }
+    data = {
+        "query": "search_ioc",
+        "search_term": hash_value,
+        "exact_match": True
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    result = response.text
+    save_findings("Hash", hash_value, "ThreatFox", result)
+    return result
+
 #VirusTotal IP checking
 def query_virustotal_ip(ip_address: str) -> str:
     vtapi_key = os.getenv("VT_API_KEY")
@@ -91,20 +154,29 @@ def classifier(ioc: str):
 #If conditions to execute functions based on IoC type
     if ip_pattern.match(ioc):
         print("Detected IP address.")
-        result = query_virustotal_ip(ioc)
-        print(result)
+        vt_result = query_virustotal_ip(ioc)
+        tf_result = query_threatfox_ip(ioc)
+        print(vt_result)
+        print(tf_result)
+
     elif hash_pattern.match(ioc):
-        print("Detected file hash. [Placeholder]")
-        save_findings("Hash", ioc, "Placeholder", "No lookup implemented.")
+        print("Detected file hash.")
+        tf_result = query_threatfox_hash(ioc)
+        print(tf_result)
+
     elif domain_pattern.match(ioc):
-        print("Detected domain. [Placeholder]")
-        save_findings("Domain", ioc, "Placeholder", "No lookup implemented.")
+        print("Detected domain.")
+        tf_result = query_threatfox_domain(ioc)
+        print(tf_result)
+
     elif email_pattern.match(ioc):
         print("Detected email. [Placeholder]")
         save_findings("Email", ioc, "Placeholder", "No lookup implemented.")
+    
     else:
         print("Detected attacker name or unknown type. [Placeholder]")
         save_findings("AttackerName", ioc, "Placeholder", "No lookup implemented.")
+
 #Calling main function
 if __name__ == "__main__":
     ioc_input = input("Enter an IoC (IP, hash, domain, email, or attacker name): ") #Modify to pass the input from AI
