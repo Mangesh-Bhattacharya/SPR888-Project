@@ -141,6 +141,59 @@ def query_virustotal_ip(ip_address: str) -> str:
 
     return summary
 
+#VirusTotal Domain Checking
+def query_virustotal_domain(domain: str) -> str:
+    vtapi_key = os.getenv("VT_API_KEY")
+    if not vtapi_key:
+        raise ValueError("VirusTotal API Key not found in environment variables.")
+
+    url = f"https://www.virustotal.com/api/v3/domains/{domain}"
+    headers = {
+        "accept": "application/json",
+        "x-apikey": vtapi_key
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        result = f"Error {response.status_code}: {response.text}"
+    else:
+        data = response.json()
+        info = data.get("data", {}).get("attributes", {})
+        result = {
+            "reputation": info.get("reputation"),
+            "last_analysis_stats": info.get("last_analysis_stats"),
+            "categories": info.get("categories"),
+        }
+    save_findings("Domain", domain, "VirusTotal", str(result))
+    return str(result)
+
+#VirusTotal Hash Checking
+def query_virustotal_hash(file_hash: str) -> str:
+    vtapi_key = os.getenv("VT_API_KEY")
+    if not vtapi_key:
+        raise ValueError("VirusTotal API Key not found in environment variables.")
+
+    url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
+    headers = {
+        "accept": "application/json",
+        "x-apikey": vtapi_key
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        result = f"Error {response.status_code}: {response.text}"
+    else:
+        data = response.json()
+        info = data.get("data", {}).get("attributes", {})
+        result = {
+            "type_description": info.get("type_description"),
+            "reputation": info.get("reputation"),
+            "last_analysis_stats": info.get("last_analysis_stats"),
+            "popular_threat_classification": info.get("popular_threat_classification", {}).get("suggested_threat_label"),
+        }
+    save_findings("Hash", file_hash, "VirusTotal", str(result))
+    return str(result)
+
 #Classifier function to detect what type of IoC was provided
 def classifier(ioc: str):
     ioc = ioc.strip() #Removing any spaces
@@ -161,12 +214,16 @@ def classifier(ioc: str):
 
     elif hash_pattern.match(ioc):
         print("Detected file hash.")
+        vt_result = query_virustotal_hash(ioc)
         tf_result = query_threatfox_hash(ioc)
+        print(vt_result)
         print(tf_result)
 
     elif domain_pattern.match(ioc):
         print("Detected domain.")
+        vt_result = query_virustotal_domain(ioc)
         tf_result = query_threatfox_domain(ioc)
+        print(vt_result)
         print(tf_result)
 
     elif email_pattern.match(ioc):
