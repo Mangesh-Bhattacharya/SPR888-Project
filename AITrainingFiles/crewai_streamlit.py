@@ -72,7 +72,7 @@ if selected_page == "Input":
             # === Original Agents (Unchanged) ===
             researcher = Agent(
                 role="Researcher Identity",
-                goal="Conduct OSINT research about the IoC using at least 10 safe threat intel sources",
+                goal="Classify the passed suspected IoC. Conduct OSINT research about the IoC using at least 10 safe threat intel sources",
                 backstory="A cyber threat researcher using public sources such as VirusTotal, ThreatFox, Shodan, and Hybrid Analysis to gather metadata, indicators, and context without touching the IoC directly.",
                 verbose=True,
                 llm=llm,
@@ -103,6 +103,12 @@ if selected_page == "Input":
             )
 
             # === Original Tasks (Unchanged) ===
+            task_classify = Task(
+                description=f"Classify the suspected IoC: {ioc_input} as one of the either: IP, file hash, url, email, or attacker name. IP value would be represented by 4 umerical values 0-255 split by periods '.'. File hash will be a unique value consisting of integers and letters in random order. URL would be a string of letters and ingeres followed by period '.' and ending with top level domain value. Email would be a combination of integers and letters followed by '@' and ending with domain value. Attacker's name should be a combination of letter's representing a name.",
+                expected_output="A definitife classification for the suspected IoC: can either be one of the following: IP, file hash, url, email, or attacker name",
+                agent=researcher,
+            )
+
             task_research = Task(
                 description=f"Conduct threat research on the IoC: {ioc_input}. Use WHOIS, ASN, malware databases, VirusTotal, ThreatFox, Shodan, and others. Include metadata, context, and source citations. Finish with '[Transitioning to: Reviewer Identity]'",
                 expected_output="A comprehensive summary of threat intelligence from at least 10 sources, fully cited.",
