@@ -5,7 +5,12 @@ import requests
 from datetime import datetime
 import pandas as pd
 import re
-
+from typing import Type
+from crewai.tools import BaseTool
+from pydantic import BaseModel, Field
+import os
+from dotenv import load_dotenv
+from urllib.parse import quote
 # === Streamlit Page Configuration ===
 st.set_page_config(
     page_title="Threat Intelligence Report Generator",
@@ -69,13 +74,112 @@ if selected_page == "Input":
                 temperature=0.4,
                 base_url="http://localhost:11434",
             )
+            # === Custom Tool Definition ===
 
+            # Load API keys
+            load_dotenv(dotenv_path="/app/plugins/my_ioc_lookup_tool/.env")
+            VT_API_KEY = "9df79dabdc37009961813baeba4d73a41cfe90c9346eeeea2e7c72be4618e6ac"
+            TF_API_KEY = "6f74885d479cc292ffebea5e8c94d517a1b460bc1a6f6b84"
+
+            # Input schema for the tool
+            class IoCInput(BaseModel):
+                ioc_type: str = Field(..., description="Type of IoC (ip, domain, hash, url, email)")
+                ioc_value: str = Field(..., description="Value of the IoC to lookup")
+
+            # CrewAI custom tool
+            class IoCLookupTool(BaseTool):
+                name: str = "IoC Threat Report Tool"
+                description: str = (
+                    "Fetches threat intelligence reports from VirusTotal and ThreatFox "
+                    "based on the provided IoC type and value."
+                )
+                args_schema: Type[BaseModel] = IoCInput
+
+                def _run(self, ioc_type: str, ioc_value: str) -> str:
+                    vt_report = self.query_virustotal(ioc_type.lower(), ioc_value)
+                    tf_report = self.query_threatfox(ioc_value)
+                    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+                    return (
+                        f"\n====== IoC Threat Report ======\n"
+                        f"Timestamp: {timestamp}\n"
+                        f"IoC Type : {ioc_type}\n"
+                        f"IoC Value: {ioc_value}\n\n"
+                        f"--- VirusTotal ---\n{vt_report}\n\n"
+                        f"--- ThreatFox ---\n{tf_report}\n"
+                        f"===============================\n"
+                    )
+
+                def query_virustotal(self, ioc_type: str, ioc_value: str) -> str:
+                    if not VT_API_KEY:
+                        return "VirusTotal API key is missing."
+
+                    try:
+                        headers = {"x-apikey": VT_API_KEY}
+                        if ioc_type in ["ip", "ips"]:
+                            url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}"
+                        elif ioc_type in ["domain", "email"]:
+                            url = f"https://www.virustotal.com/api/v3/domains/{ioc_value}"
+                        elif ioc_type == "url":
+                            encoded = quote(ioc_value, safe="")
+                            url = f"https://www.virustotal.com/api/v3/urls/{encoded}"
+                        elif ioc_type == "hash":
+                            url = f"https://www.virustotal.com/api/v3/files/{ioc_value}"
+                        else:
+                            return "Unsupported IoC type for VirusTotal."
+
+                        response = requests.get(url, headers=headers, timeout=15)
+                        data = response.json().get("data", {}).get("attributes", {})
+                        stats = data.get("last_analysis_stats", {})
+                        rep = data.get("reputation", "N/A")
+                        tags = data.get("tags", [])
+                        date = data.get("last_analysis_date", 0)
+                        scan_time = datetime.utcfromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S") if date else "N/A"
+
+                        return (
+                            f"Last Scan Time  : {scan_time}\n"
+                            f"Reputation      : {rep}\n"
+                            f"Analysis Stats  : {stats}\n"
+                            f"Tags            : {tags}"
+                        )
+                    except Exception as e:
+                        return f"VirusTotal error: {e}"
+
+                def query_threatfox(self, ioc_value: str) -> str:
+                    if not TF_API_KEY:
+                        return "ThreatFox API key is missing."
+
+                    try:
+                        url = "https://threatfox-api.abuse.ch/api/v1/"
+                        headers = {"API-KEY": TF_API_KEY}
+                        data = {"query": "search_ioc", "search_term": ioc_value}
+                        response = requests.post(url, json=data, headers=headers, timeout=15)
+                        result = response.json()
+
+                        if result.get("data") and isinstance(result["data"], list):
+                            entry = result["data"][0]
+                            return (
+                                f"Threat Type     : {entry.get('threat_type')}\n"
+                                f"Threat Actor    : {entry.get('threat_actor')}\n"
+                                f"Malware Family  : {entry.get('malware')}\n"
+                                f"Tags            : {', '.join(entry.get('malware_tags', []))}\n"
+                                f"Confidence      : {entry.get('confidence_level')}\n"
+                                f"First Seen      : {entry.get('first_seen')}\n"
+                                f"Reference       : {entry.get('reference')}"
+                            )
+                        return "No result found in ThreatFox."
+                    except Exception as e:
+                        return f"ThreatFox error: {e}"
+            ioc_tool = IoCLookupTool()
+
+        
             # === Original Agents (Unchanged) ===
             researcher = Agent(
                 role="Researcher Identity",
-                goal="Classify the passed suspected IoC. Conduct OSINT research about the IoC using at least 10 safe threat intel sources",
+                goal="Using the available tool and web search classify the passed suspected IoC and conduct the search to find the related to suspect IoC information using at least 10 safe threat intel sources. Make sure to execute the tool and gather output of it as well.The following headers will be in the final output report so make sure to collect information that owuld support each of those: 1. Input Summary, 3. Key Findings, 5. Suspected IoC Core Attributes 6. Reputation Analysis 7. Network Behaviour Patterns 8. Associated Activities 9. Associated Campaigns 10. Related Indicators 11. Detection signatures 12. Recommendations 13. Network Controls 14. Endpoint Protection 15. References 16. References Amount",
                 backstory="A cyber threat researcher using public sources such as VirusTotal, ThreatFox, Shodan, and Hybrid Analysis to gather metadata, indicators, and context without touching the IoC directly.",
                 verbose=True,
+                tools=[ioc_tool],
                 llm=llm,
             )
 
