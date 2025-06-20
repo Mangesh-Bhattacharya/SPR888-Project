@@ -7,11 +7,17 @@ import pandas as pd
 import re
 from typing import Type
 from crewai.tools import BaseTool
-from crewai_tools import WebsiteSearchTool
+from crewai_tools import WebsiteSearchTool, SerperDevTool
 from crewai.knowledge.source.string_knowledge_source import StringKnowledgeSource
 from pydantic import BaseModel, Field
 import os
 from dotenv import load_dotenv
+import webbrowser
+from urllib.parse import quote
+from bs4 import BeautifulSoup
+import urllib.robotparser
+from urllib.parse import quote, urlparse
+
 
 # === Streamlit Page Configuration ===
 st.set_page_config(
@@ -72,7 +78,7 @@ if selected_page == "Input":
             # === Configure Language Model ===
             llm = LLM(
                 model="ollama/llama3.2:latest",
-                temperature=0.4,
+                temperature=0.2,
                 base_url="http://localhost:11434",
             )
             # === Tool Definition ===
@@ -201,7 +207,7 @@ if selected_page == "Input":
 
                 return "\n".join(result_log)
             tool_results = (classifier(ioc_input))
-            # print(tool_results)
+            #print(tool_results)
             tool_output = StringKnowledgeSource(content=tool_results)
             # print("PRINTING KNOWLEDGE SOURCE")
             # print(tool_output)
@@ -258,27 +264,124 @@ if selected_page == "Input":
 
             # === Web Search Tool Definition ===
             websearch_tool = WebsiteSearchTool()
+            search_tool = SerperDevTool(n_results=10)
+            USER_AGENT = "Mozilla/5.0"
+
+            def is_allowed_to_scrape(url, user_agent=USER_AGENT):
+                try:
+                    parsed_url = urlparse(url)
+                    robots_url = f"{parsed_url.scheme}://{parsed_url.netloc}/robots.txt"
+                    rp = urllib.robotparser.RobotFileParser()
+                    rp.set_url(robots_url)
+                    rp.read()
+                    return rp.can_fetch(user_agent, url)
+                except Exception:
+                    return False  # Be cautious by default
+
+            def scrape_with_requests(url):
+                try:
+                    headers = {
+                        "User-Agent": USER_AGENT
+                    }
+                    response = requests.get(url, headers=headers, timeout=10)
+                    response.raise_for_status()
+                    soup = BeautifulSoup(response.text, "html.parser")
+                    title = soup.title.string.strip() if soup.title else "No Title"
+                    paragraphs = soup.find_all("p")
+                    text = " ".join(p.get_text().strip() for p in paragraphs)
+                    summary = " ".join(text.split()[:300])  # ~300 word summary
+                    return {"title": title, "summary": summary}
+                except Exception as e:
+                    return {"title": "Error", "summary": f"Could not scrape {url}: {e}"}
+
+            def search_google_cse(query, max_results=2):
+                GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+                GOOGLE_CX = os.getenv("GOOGLE_CX")
+                url = "https://www.googleapis.com/customsearch/v1"
+                params = {
+                    "key": GOOGLE_API_KEY,
+                    "cx": GOOGLE_CX,
+                    "q": query,
+                    "num": max_results,
+                }
+                try:
+                    response = requests.get(url, params=params)
+                    items = response.json().get("items", [])
+                    return [(item.get("title", "No Title"), item.get("link")) for item in items]
+                except Exception:
+                    return []
+
+            def extract_and_search(input_text):
+                search_terms = []
+
+                # Extract Malware
+                malware_match = re.search(r"Malware\s+:\s+([^\n(]+)", input_text)
+                if malware_match:
+                    search_terms.append(malware_match.group(1).strip())
+
+                # Extract Aliases
+                aliases_match = re.search(r"Aliases\s+:\s+([^\n]+)", input_text)
+                if aliases_match:
+                    aliases = [alias.strip() for alias in aliases_match.group(1).split(",")]
+                    search_terms.extend(aliases)
+
+                # Extract Tags
+                tags_match = re.search(r"Tags\s+:\s+\[([^\]]+)\]", input_text)
+                if tags_match:
+                    tags = [tag.strip().strip("'\"") for tag in tags_match.group(1).split(",")]
+                    search_terms.extend(tags)
+
+                # Extract hashes (MD5, SHA256)
+                hash_matches = re.findall(r"(MD5|SHA256)\s*:\s*([a-fA-F0-9]{32,64})", input_text)
+                for _, hash_val in hash_matches:
+                    search_terms.append(f"hash {hash_val}")
+
+                # Deduplicate
+                search_terms = list(set(search_terms))
+
+                output = "🔍 Top Search Results (robots.txt respected):\n"
+                for term in search_terms:
+                    search_results = search_google_cse(term)
+                    if not search_results:
+                        continue
+
+                    summaries = ""
+                    for title, link in search_results:
+                        if not link or not is_allowed_to_scrape(link):
+                            continue
+
+                        scrape_result = scrape_with_requests(link)
+                        summaries += f"- [{scrape_result['title']}]({link})\n  • {scrape_result['summary'][:300]}...\n"
+
+                    if summaries:
+                        output += f"\n🔹 **{term}**\n{summaries}"
+
+                return output.strip()
+
+            search_results = str(extract_and_search(tool_results))
+            print("Printing SEARCH RESULTS     ",search_results)
+            search_output = StringKnowledgeSource(content=search_results)
 
             # === Agents ===
             researcher = Agent(
                 role="Threat Intelligence Researcher",
                 goal=(
-                    "Extract all necessary threat intelligence to populate every section of the final report, "
+                    "Extract all necessary from knowledge and the search tool results threat intelligence to populate every section of the final report, "
                     "including IoC metadata, detection rates, behavior, and context. Ensure every detail needed "
                     "for the following sections is collected: Input Summary, Threat Confidence, Key Findings, "
-                    "Quick Assessment, Core Attributes, Reputation Analysis, Network Behaviour, Related Indicators, "
-                    "Campaigns, and Detection Signatures."
+                    "Quick Assessment, Core Attributes, Reputation Analysis, Network Behaviour, Related Indicators, Campaigns, and Detection Signatures. "
+                    "Make sure to strip any unrelated to cybersecurity threat information."
                 ),
                 backstory="Specializes in structured threat data analysis using internal intelligence reports only.",
                 verbose=True,
-                knowledge_sources=[tool_output],
+                knowledge_sources=[search_output, tool_output, template],
                 llm=llm,
             )
 
             fact_checker = Agent(
             role="Threat Intelligence Validator",
             goal=(
-                "Execute layered verification of all extracted threat intelligence. This includes: "
+                "Execute layered verification of all extracted threat intelligence by conducting web search and verifying the information obtained by researcher. Tasks include: "
                 "1) Cross-checking extracted values against multiple external trusted sources, "
                 "2) Validating internal consistency (e.g., reputation scores vs. engine flags), "
                 "3) Confirming timeline logic (e.g., first seen dates align with reported campaigns), and "
@@ -287,6 +390,7 @@ if selected_page == "Input":
             backstory=(
                 "An experienced cyber threat validation expert combining open-source research skills with analytical consistency checking. "
                 "Uses online intelligence sources to confirm threat signatures, uncover contradictions, and ensure timestamp and reputation accuracy across all report fields."),
+            knowledge_sources=[template],
             verbose=True,
             llm=llm,
             )
@@ -301,14 +405,15 @@ if selected_page == "Input":
                 "Conclude with defensive insights to guide detection, prevention, and response strategies."),
                 backstory="Analyzes and contextualizes threat reports to produce actionable threat intelligence summaries.",
                 verbose=True,
+                knowledge_sources=[tool_output, template],
                 llm=llm,
             )
 
             writer = Agent(
                 role="Threat Report Writer",
                 goal=(
-                    "Using the provided template from knowledge, write a complete threat report. "
-                    "Each section must be completed thoroughly using only verified and analyzed data obtained from Researcher and Analyzer. Do not create new headers."
+                    "Using the provided template from knowledge, compile the threat report using the information obtained from other agents. "
+                    "Each section must be completed thoroughly using only verified and analyzed data obtained from Researcher and Analyzer. Do not create new headers and make sure to use the headers from template verbatim, no numbering."
                 ),
                 backstory="Produces professional-grade threat reports with clear formatting and no deviation from structure represented in the template from the knowledge.",
                 verbose=True,
@@ -320,7 +425,7 @@ if selected_page == "Input":
             task_research = Task(
                 description=(
                     "Extract all threat intelligence details from the knowledge base to support every section of the template. "
-                    "This includes IoC attributes, malware names, detection rates, first seen timestamps, aliases, threat type, and external links."
+                    "This includes IoC attributes, malware names, detection rates, first seen timestamps, aliases, threat type, and external links, information obtained from the search."
                 ),
                 expected_output="Comprehensive structured threat data aligned to report sections.",
                 agent=researcher
@@ -348,16 +453,19 @@ if selected_page == "Input":
                 description=(
                     "Use the strict template provided in your knowledge to write a complete professional threat report. "
                     "Only use headers from the template. Populate each section thoroughly and accurately using the Analyzer’s and Researcher's validated outputs."
+                    "If you report has bullet points make sure they are converted to 1) 2) 3)"
                 ),
-                expected_output="Finalized threat report containing exactly the headers from the template, fully completed.",
+                expected_output= "Report strictly following the headers from the template with no numbering, verbatim.",
                 agent=writer,
                 context=[task_analyze]
             )
 
             task_confirm_write = Task(
                     description=(
-                        "Confirm that the report provided by writer strictly follows the header structure presented in the template from the knowledge verbatim. Make sure no other headers are used, make sure value of threat confidence header is just the number from 0-100. If other structure than the template is detected, make sure to apply the headers from the report to the information provided."),
-                    expected_output="Finalized threat report containing exact headers from the template from the knowledge, fully completed and confirmed. Threat confidence header with 0-100 number and no other text.",
+                        "Confirm that the report provided by writer strictly follows the header structure presented in the template from the knowledge verbatim. Make sure no other headers are used, make sure value of threat confidence header is just the number from 0-100. If other structure than the template is detected, make sure to apply the headers from the report to the information provided."
+                        "If you report values has bullet points make sure they are converted to 1) 2) 3)"
+                        "If the headers fo by 1. 2. 3. make sure to remove the numbering, leaving only headers verabtim to the template"),
+                    expected_output="Finalized threat report containing exact headers from the template from the knowledge, fully completed and confirmed. Threat confidence header should have only value of 0-100 number and no other text.",
                     agent=writer,
                     context=[task_analyze]
                 )
@@ -501,3 +609,4 @@ elif selected_page == "Report":
     else:
         st.warning(
             "No report has been generated yet. Please go to the 'Input' tab and run the analysis.")
+            
