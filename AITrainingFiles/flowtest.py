@@ -47,8 +47,8 @@ selected_page = st.sidebar.radio("Navigate to", ["Input", "Report"])
 st.title("🔍 Threat Intelligence Report Generator")
 st.markdown(
     """
-Analyze suspicious indicators such as IP addresses, domains, file hashes, emails, or actor names 
-to generate a detailed, professional-grade threat intelligence report.
+Research and analyze suspicious indicators such as IP addresses, domains, file hashes 
+to generate a threat intelligence report.
 """
 )
 
@@ -62,9 +62,9 @@ if "report_date" not in st.session_state:
 
 # === INPUT PAGE ===
 if selected_page == "Input":
-    st.header("Step 1: Enter Indicator of Compromise (IoC)")
+    st.header("Enter suspected Indicator of Compromise (IoC)")
     ioc_input = st.text_input(
-        "Enter an IoC (IP, domain, hash, email, or attacker name):"
+        "Enter an IoC (IP, domain, or hash):"
     )
     start_button = st.button("🧠 Start Threat Analysis")
 
@@ -72,7 +72,7 @@ if selected_page == "Input":
         st.session_state.ioc_input = ioc_input
         st.session_state.report_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        st.info("Initializing threat intelligence analysis using multi-agent system...")
+        st.info("Initializing threat intelligence research and analysis using multi-agent system...")
 
         with st.spinner("Running analysis. This may take a few moments..."):
             # === Configure Language Model ===
@@ -371,6 +371,9 @@ if selected_page == "Input":
                     "for the following sections is collected: Input Summary, Threat Confidence, Key Findings, "
                     "Quick Assessment, Core Attributes, Reputation Analysis, Network Behaviour, Related Indicators, Campaigns, and Detection Signatures. "
                     "Make sure to strip any unrelated to cybersecurity threat information."
+                    "Make sure to organize information under the following headers in your response:  Input Summary, Threat Confidence,  Key Findings,  Quick Assessment,  Suspected IoC Core Attributes,  Reputation Analysis,  Network Behaviour Patterns, Associated Activities, Associated Campaigns,  Related Indicators,  Detection Signatures,  Recomendations,  Network Controls Endpoint Protection, References"
+                    "Make sure Threat Confidence value is just a number of 0-100 with no other text around it"
+                    "Make sure if you try to make a list of value under any header, make it a numbered list"
                 ),
                 backstory="Specializes in structured threat data analysis using internal intelligence reports only.",
                 verbose=True,
@@ -386,6 +389,9 @@ if selected_page == "Input":
                 "2) Validating internal consistency (e.g., reputation scores vs. engine flags), "
                 "3) Confirming timeline logic (e.g., first seen dates align with reported campaigns), and "
                 "4) Verifying that all listed data aligns with known threat actor behaviors and malware characteristics."
+                "Make sure to organize information under the following headers in your response:  Input Summary, Threat Confidence,  Key Findings,  Quick Assessment,  Suspected IoC Core Attributes,  Reputation Analysis,  Network Behaviour Patterns, Associated Activities, Associated Campaigns,  Related Indicators,  Detection Signatures,  Recomendations,  Network Controls Endpoint Protection, References"
+                "Make sure Threat Confidence value is just a number of 0-100 with no other text around it"
+                "Make sure if you try to make a list of value under any header, make it a numbered list"
             ),
             backstory=(
                 "An experienced cyber threat validation expert combining open-source research skills with analytical consistency checking. "
@@ -402,7 +408,11 @@ if selected_page == "Input":
                 "For each report section, assess and interpret the relevance, severity, and implications of the data. "
                 "Incorporate: threat confidence scoring with justification, MITRE ATT&CK technique and tactic mappings, behavioral indicators, "
                 "campaign attribution (if applicable), attacker infrastructure use, and impact on confidentiality, integrity, and availability (CIA). Define Threat Confidence as just number (0-100)- don't provide any other text for this header "
-                "Conclude with defensive insights to guide detection, prevention, and response strategies."),
+                "Conclude with defensive insights to guide detection, prevention, and response strategies."
+                "Make sure to organize information under the following headers in your response:  Input Summary, Threat Confidence,  Key Findings,  Quick Assessment,  Suspected IoC Core Attributes,  Reputation Analysis,  Network Behaviour Patterns, Associated Activities, Associated Campaigns,  Related Indicators,  Detection Signatures,  Recomendations,  Network Controls Endpoint Protection, References"
+                "Make sure Threat Confidence value is just a number of 0-100 with no other text around it"
+                "Make sure if you try to make a list of value under any header, make it a numbered list"
+                ),
                 backstory="Analyzes and contextualizes threat reports to produce actionable threat intelligence summaries.",
                 verbose=True,
                 knowledge_sources=[tool_output, template],
@@ -414,6 +424,9 @@ if selected_page == "Input":
                 goal=(
                     "Using the provided template from knowledge, compile the threat report using the information obtained from other agents. "
                     "Each section must be completed thoroughly using only verified and analyzed data obtained from Researcher and Analyzer. Do not create new headers and make sure to use the headers from template verbatim, no numbering."
+                    "Make sure to organize information under the following headers in your response:  Input Summary, Threat Confidence,  Key Findings,  Quick Assessment,  Suspected IoC Core Attributes,  Reputation Analysis,  Network Behaviour Patterns, Associated Activities, Associated Campaigns,  Related Indicators,  Detection Signatures,  Recomendations,  Network Controls Endpoint Protection, References"
+                    "Make sure Threat Confidence value is just a number of 0-100 with no other text around it"
+                    "Make sure if you try to make a list of value under any header, make it a numbered list"
                 ),
                 backstory="Produces professional-grade threat reports with clear formatting and no deviation from structure represented in the template from the knowledge.",
                 verbose=True,
@@ -426,6 +439,7 @@ if selected_page == "Input":
                 description=(
                     "Extract all threat intelligence details from the knowledge base to support every section of the template. "
                     "This includes IoC attributes, malware names, detection rates, first seen timestamps, aliases, threat type, and external links, information obtained from the search."
+                    "Make sure to organize information under the following headers in your response:  Input Summary, Threat Confidence,  Key Findings,  Quick Assessment,  Suspected IoC Core Attributes,  Reputation Analysis,  Network Behaviour Patterns, Associated Activities, Associated Campaigns,  Related Indicators,  Detection Signatures,  Recomendations,  Network Controls Endpoint Protection, References"
                 ),
                 expected_output="Comprehensive structured threat data aligned to report sections.",
                 agent=researcher
@@ -497,29 +511,57 @@ elif selected_page == "Report":
         import re
         report = st.session_state.report_text
 
-        def extract_section(title):
-            pattern = rf"\*\*\s*{re.escape(title)}\s*\*\*\s*\n+(.*?)(?=\n\*\*|\Z)"
-            match = re.search(pattern, report, re.DOTALL)
-            return match.group(1).strip() if match else "Not available."
-
-        # Extract threat confidence
-        threat_conf_match = re.search(r"\*\*\s*Threat Confidence\s*\*\*\s*:?\s*\n?(\d+)", report)
-        threat_confidence = int(threat_conf_match.group(1)) if threat_conf_match else None
-
-        # Extract all report sections
-        sections = {title: extract_section(title) for title in [
+        canonical_titles = [
             "Input Summary", "Threat Confidence", "Key Findings", "Quick Assessment",
             "Suspected IoC Core Attributes", "Reputation Analysis", "Network Behaviour Patterns",
             "Associated Activities", "Associated Campaigns", "Related Indicators",
-            "Detection signatures", "Recommendations", "Network Controls", "Endpoint Protection", "References"
-        ]}
+            "Detection Signatures", "Recommendations", "Network Controls", "Endpoint Protection", "References"
+        ]
+
+        # Normalize headers like "1. Input Summary:" to canonical form
+        def normalize_header(header_text):
+            clean = header_text.strip().lower()
+            clean = re.sub(r"^\d+[\.\)]?\s*", "", clean)  # remove "1." or "1) "
+            clean = re.sub(r"[:*\-]+", "", clean)         # remove extra formatting
+            clean = clean.strip()
+            for canon in canonical_titles:
+                if clean.startswith(canon.lower()):
+                    return canon
+            return None
+
+        # Find all section headers
+        header_regex = re.compile(r"^\s*[*#\-]*\s*\d*[\.\)]?\s*([A-Za-z][\w\s/&-]{3,})\s*[:*\-]*\s*$", re.MULTILINE)
+        matches = [(m.start(), m.end(), m.group(1)) for m in header_regex.finditer(report)]
+
+        # Initialize section content dict
+        sections = {title: "Not available." for title in canonical_titles}
+
+        # Extract content between headers
+        for i, (start, end, raw_header) in enumerate(matches):
+            canon_title = normalize_header(raw_header)
+            if not canon_title:
+                continue
+
+            content_start = end
+            content_end = matches[i + 1][0] if i + 1 < len(matches) else len(report)
+            section_body = report[content_start:content_end].strip()
+
+            # Optional cleanup: remove repeated header line inside the content
+            # e.g. remove "Input Summary:" or "** Input Summary **" appearing again
+            repeated_header_pattern = re.compile(rf"^\s*[*#\-]*\s*{re.escape(raw_header)}\s*[:*\-]*\s*", re.IGNORECASE)
+            section_body = repeated_header_pattern.sub("", section_body).strip()
+
+            sections[canon_title] = section_body
+
+       # --- Extract numerical threat confidence value ---
+        threat_conf_match = re.search(r"\*\*Threat Confidence\*\*\s*:?\s*\n?(\d+)", report)
+        threat_confidence = int(threat_conf_match.group(1)) if threat_conf_match else None
 
         # === Report Overview ===
         with st.expander("🔍 Executive Summary", expanded=True):
             cols = st.columns(3)
             cols[0].metric("Indicator Analyzed", st.session_state.ioc_input)
             cols[1].metric("Threat Confidence", threat_confidence)
-            cols[2].metric("Data Sources", "AI + OSINT verified")
 
             st.markdown(f"""
             **Key Findings:**  
@@ -563,7 +605,7 @@ elif selected_page == "Report":
                 st.subheader("Defensive Considerations")
                 st.markdown(f"""
                 **Detection Signatures:**  
-                {sections['Detection signatures']}
+                {sections['Detection Signatures']}
 
                 **Network Controls:**  
                 {sections['Network Controls']}
@@ -609,4 +651,5 @@ elif selected_page == "Report":
     else:
         st.warning(
             "No report has been generated yet. Please go to the 'Input' tab and run the analysis.")
+            
             
