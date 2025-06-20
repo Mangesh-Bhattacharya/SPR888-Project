@@ -625,21 +625,21 @@ elif selected_page == "Report":
         with st.expander("🛡️ Recommendations & Mitigations"):
             st.markdown(f"{sections['Recommendations']}")
         # === IOCs ===
-        with st.expander("🔗 Related Indicators of Compromise"):
-            ioc_data = {
-                "Type": ["IP", "Domain", "Hash"],
-                "Value": [st.session_state.ioc_input, "malicious.example.com", "a1b2c3d4e5f6..."],
-                "First Seen": ["2023-01-15", "2023-03-22", "2023-05-10"],
-                "Confidence": ["High", "Medium", "High"]
-            }
-            st.dataframe(ioc_data)
+        # with st.expander("🔗 Related Indicators of Compromise"):
+        #     ioc_data = {
+        #         "Type": ["IP", "Domain", "Hash"],
+        #         "Value": [st.session_state.ioc_input, "malicious.example.com", "a1b2c3d4e5f6..."],
+        #         "First Seen": ["2023-01-15", "2023-03-22", "2023-05-10"],
+        #         "Confidence": ["High", "Medium", "High"]
+        #     }
+        #     st.dataframe(ioc_data)
 
-            st.download_button(
-                label="📥 Download IOCs (CSV)",
-                data=pd.DataFrame(ioc_data).to_csv(index=False),
-                file_name="related_iocs.csv",
-                mime="text/csv"
-            )
+        #     st.download_button(
+        #         label="📥 Download IOCs (CSV)",
+        #         data=pd.DataFrame(ioc_data).to_csv(index=False),
+        #         file_name="related_iocs.csv",
+        #         mime="text/csv"
+        #     )
 
         # === Full Report Download ===
         st.download_button(
