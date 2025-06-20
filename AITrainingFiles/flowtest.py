@@ -566,7 +566,6 @@ elif selected_page == "Report":
             st.markdown(f"""
             **Key Findings:**  
             {sections['Key Findings']}
-
             **Quick Assessment:**  
             {sections['Quick Assessment']}
             """)
@@ -580,10 +579,8 @@ elif selected_page == "Report":
                 st.markdown(f"""
                 **Input Summary:**  
                 {sections['Input Summary']}
-
                 **Core Attributes:**  
                 {sections['Suspected IoC Core Attributes']}
-
                 **Reputation Analysis:**  
                 {sections['Reputation Analysis']}
                 """)
@@ -593,10 +590,8 @@ elif selected_page == "Report":
                 st.markdown(f"""
                 **Network Behaviour Patterns:**  
                 {sections['Network Behaviour Patterns']}
-
                 **Associated Activities:**  
                 {sections['Associated Activities']}
-
                 **Associated Campaigns:**  
                 {sections['Associated Campaigns']}
                 """)
@@ -606,10 +601,8 @@ elif selected_page == "Report":
                 st.markdown(f"""
                 **Detection Signatures:**  
                 {sections['Detection Signatures']}
-
                 **Network Controls:**  
                 {sections['Network Controls']}
-
                 **Endpoint Protection:**  
                 {sections['Endpoint Protection']}
                 """)
@@ -618,10 +611,8 @@ elif selected_page == "Report":
         with st.expander("🌐 Threat Context & References"):
             st.subheader("Related Indicators")
             st.markdown(f"{sections['Related Indicators']}")
-
             st.subheader("References")
             st.markdown(f"{sections['References']}")
-
         with st.expander("🛡️ Recommendations & Mitigations"):
             st.markdown(f"{sections['Recommendations']}")
         # === IOCs ===
