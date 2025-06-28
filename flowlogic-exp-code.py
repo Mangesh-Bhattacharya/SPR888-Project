@@ -7,13 +7,13 @@ import pandas as pd
 import re
 from typing import Type
 from crewai.tools import BaseTool
-from crewai.tools import SerperDevTool
+# from crewai.tools import SerperDevTool
 from crewai.knowledge.source.string_knowledge_source import StringKnowledgeSource
 from pydantic import BaseModel, Field
 import os
 from dotenv import load_dotenv
 import webbrowser
-from urllib.parse import quote
+# from urllib.parse import quote
 from bs4 import BeautifulSoup
 import urllib.robotparser
 from urllib.parse import quote, urlparse
@@ -35,9 +35,7 @@ def load_lottieurl(url):
     return r.json()
 
 
-report_anim = load_lottieurl(
-    "https://assets2.lottiefiles.com/packages/lf20_vf7wnpfz.json"
-)
+report_anim = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_vf7wnpfz.json")
 
 # === Sidebar Navigation ===
 st.sidebar.title("Threat Navigation Panel")
@@ -264,7 +262,7 @@ if selected_page == "Input":
 
             # === Web Search Tool Definition ===
 #            websearch_tool = WebsiteSearchTool()
-            search_tool = SerperDevTool(n_results=10)
+#            search_tool = SerperDevTool(n_results=10)
             USER_AGENT = "Mozilla/5.0"
 
             def is_allowed_to_scrape(url, user_agent=USER_AGENT):
@@ -388,12 +386,12 @@ if selected_page == "Input":
             goal=(
                 "Execute layered verification of all extracted threat intelligence by conducting web search and verifying the information obtained by the researcher. "
                 "For each key field (malware family, tags, threat type, detection engines, confidence, timestamps): "
-                "1) Log the value provided by the researcher, "
-                "2) Log the value(s) found in web search and tool outputs, "
-                "3) Explicitly state if the values match (Y/N), and if not, flag the contradiction and show both values, "
+                "1) Log the value provided by the researcher, \n"
+                "2) Log the value(s) found in web search and tool outputs, \n"
+                "3) Explicitly state if the values match (Y/N), and if not, flag the contradiction and show both values, \n"
                 "4) If a value is missing in the web search/tool, note it. "
                 "Then, assemble a clean, verified field set for analysis, using only confirmed or explainable values. "
-                "If you make a list, always use 1) 2) 3) format instead of bullets or dashes. "
+                "If you make a list, always use 1)\n 2)\n 3)\n format instead of bullets or dashes. "
                 "Strictly ensure headers match the template verbatim, with no numbering or extra symbols."
             ),  # <-- CHANGED: More explicit, adds list formatting & field-by-field instructions
             backstory=
@@ -655,5 +653,4 @@ elif selected_page == "Report":
     else:
         st.warning(
             "No report has been generated yet. Please go to the 'Input' tab and run the analysis.")
-            
             
