@@ -189,6 +189,6 @@ Specify your license of choice, e.g., MIT or Apache-2.0.
 
 ## Contact
 
-- [Mangesh Bhattacharya](mailto:mabhattacharya@myseneca.ca) — mabhattacharya@myseneca.ca  
-- [Artem Gaynetdinov](mailto:agaynetdinov@myseneca.ca) — agaynetdinov@myseneca.ca  
-- [Lekshmi Balan](mailto:lbalan@myseneca.ca) — lbalan@myseneca.ca
+- [Mangesh Bhattacharya](mailto:mabhattacharya@myseneca.ca)
+- [Artem Gaynetdinov](mailto:agaynetdinov@myseneca.ca)
+- [Lekshmi Balan](mailto:lbalan@myseneca.ca)
