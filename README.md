@@ -148,9 +148,9 @@ project-root/
 
 ## Security & Privacy
 
-- **Do not** paste real API keys into README/issues or commit them to the repo.
+- **Do not** paste genuine API keys into README/issues or commit them to the repo.
 - Add `.env` (and any file containing secrets) to `.gitignore`.
-- Verify that IoCs you test are safe to query per your organization’s policies.
+- Verify that the IoCs you test are safe to query per your organization’s policies.
 - Be mindful of **PII** or sensitive logs if you add custom datasets.
 
 ---
@@ -159,7 +159,7 @@ project-root/
 
 - **Module not found (e.g., streamlit):** Re-run dependency installation in the **active** virtual environment.
 - **Dataset not found:** Verify `DATASET_PATH` and folder contents; ensure paths are correct on your OS.
-- **Port in use / browser won’t open:** Run on a different port:  
+- **Port in use/browser won’t open:** Run on a different port:  
   `python -m streamlit run spr888c.py --server.port 8502`
 - **API auth errors:** Ensure environment variables are set in the **same terminal** you use to run Streamlit (or use `.env`).
 
@@ -177,7 +177,7 @@ project-root/
 
 ## Contributing
 
-Issues and PRs are welcome. Please avoid including any real API keys or sensitive IoCs in tickets or sample data.
+Issues and PRs are welcome. Please avoid including any genuine API keys or sensitive IoCs in tickets or sample data.
 
 ---
 
@@ -189,4 +189,6 @@ Specify your license of choice, e.g., MIT or Apache-2.0.
 
 ## Contact
 
-Example: **team.contact@example.com**
+- [Mangesh Bhattacharya](mailto:mabhattacharya@myseneca.ca) — mabhattacharya@myseneca.ca  
+- [Artem Gaynetdinov](mailto:agaynetdinov@myseneca.ca) — agaynetdinov@myseneca.ca  
+- [Lekshmi Balan](mailto:lbalan@myseneca.ca) — lbalan@myseneca.ca
