@@ -165,7 +165,7 @@ project-root/
 
 ---
 
-## Roadmap / Ideas
+## Roadmap/Ideas
 
 - Optional output formats (CSV/JSON) for batch results.
 - Caching layer for API responses to reduce rate limit pressure.
