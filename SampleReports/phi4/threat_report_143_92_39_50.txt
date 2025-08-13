@@ -1,0 +1,83 @@
+=== IOC Analysis Report ===
+IOC: 143.92.39.50
+Type: IPv4 Address
+Category: Network
+Generated: 2025-07-29T15:19:38.230156
+
+===== Report =====
+### Comprehensive Threat Intelligence Report
+
+#### 1. IOC Classification
+- **Type:** IPv4 Address
+- **Category:** Botnet Command & Control (C&C) Server
+- **IP:Port Combination:** 143.92.39.50:8880
+
+#### 2. Technical Analysis
+- **Detection Ratio on VirusTotal:** 
+  - Total Samples Analyzed: 94
+  - Malicious: 4
+  - Suspicious: 1
+  - Harmless: 57
+  - Undetected: 32
+- **Reputation Score:** -12
+- **Flagged by:**
+  - AlphaSOC (suspicious)
+  - CRDF (malicious)
+  - Fortinet (malware)
+  - MalwarePatrol (malicious)
+  - SOCRadar (malware)
+
+#### 3. Related Threats and Campaigns
+- **Associated Malware:** Cobalt Strike
+  - Known for use in Advanced Persistent Threats (APTs) and red teaming exercises.
+- **Aliases:**
+  - Agentemis, BEACON, CobaltStrike, cobeacon
+
+#### 4. Historical Sightings
+- **First Seen:** 2025-07-29 12:01:06 UTC
+- **Last Seen:** Not available (indicating ongoing activity or recent emergence)
+- **Additional Context:** [Censys.io Reference](https://search.censys.io/hosts/143.92.39.50)
+
+#### 5. Behavior Patterns
+- Cobalt Strike is typically used to establish persistence and maintain command & control over compromised systems.
+- Often employs beacons for communication, aligning with the identified port (8880) being used for C&C activities.
+
+#### 6. Documentation with Sources
+- **VirusTotal:** Provides reputation scores and detection ratios.
+- **ThreatFox:** Identifies threat type with a confidence level of 100%.
+- **Malpedia:** Offers detailed information on Cobalt Strike: [Malpedia Link](https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike)
+
+#### 7. Local Dataset Correlation
+- **Local Dataset Findings:**
+  - No matches found in the local dataset, suggesting this IOC might not have been previously encountered or documented locally.
+- **Patterns Across Datasets:**
+  - The absence of this IOC in local datasets indicates it may be a newly identified threat or one that has not yet impacted monitored networks.
+
+#### 8. Threat Assessment
+- **Threat Confidence Score:** 85/100
+  - High confidence due to strong external intelligence indicating malicious activity and historical associations with Cobalt Strike malware.
+
+#### 9. Mitigation Strategies
+- **Network Segmentation:**
+  - Implement network segmentation to limit the spread of potential threats from C&C servers.
+- **Intrusion Detection/Prevention Systems (IDS/IPS):**
+  - Deploy IDS/IPS to monitor for Cobalt Strike-related traffic patterns.
+- **Threat Intelligence Feeds:**
+  - Regularly update threat intelligence feeds.
+- **Security Awareness Training:**
+  - Conduct regular security awareness training sessions.
+
+#### 10. MITRE ATT&CK Technique and Tactic Mappings
+- **Tactics:**
+  - Command and Control
+  - Persistence
+- **Techniques:**
+  - Associated with `T1071.001` (Application Layer Protocol: Web Protocols) for C&C communication.
+
+---
+
+This comprehensive report highlights the potential threat posed by the IP address `143.92.39.50`, primarily associated with Cobalt Strike malware activities. Continuous monitoring and updating of both local datasets and external threat intelligence are crucial for effective defense against such threats.
+
+===== Dataset Results =====
+Total Matches: 0
+Datasets Searched: 253

@@ -1,0 +1,79 @@
+=== IOC Analysis Report ===
+IOC: 143.92.39.50
+Type: IPv4 Address
+Category: Network
+Generated: 2025-07-29T15:38:34.017066
+
+===== Report =====
+**Comprehensive Threat Intelligence Report**
+
+**IOC Classification:** IP Address (IPv4)
+
+**Detailed Findings:**
+
+The IOC 143.92.39.50 has been analyzed using various tools and datasets. The following findings are presented below:
+
+* **Type and Category:** The IOC is an IPv4 address, which falls under the category of IP Address.
+* **Technical Attributes:**
+	+ IP Address: 143.92.39.50
+	+ Port: 8880 (used for botnet command and control)
+	+ Malware: Cobalt Strike (win.cobalt_strike)
+* **Related Threats and Campaigns:** The IOC is associated with the Cobalt Strike malware, which is a popular tool used by attackers to conduct malicious activities. According to ThreatFox, the IOC has been linked to a botnet command and control server.
+* **Historical Sightings:** According to VirusTotal, the IOC was first seen on July 29, 2025, at 12:01:06 UTC. However, no further sightings have been recorded.
+* **Behavior Patterns:** The IOC is used as part of a botnet command and control server, which suggests that it may be involved in malicious activities such as distributed denial-of-service (DDoS) attacks or data exfiltration.
+
+**Local Dataset Findings:**
+
+No matches were found in the local dataset files.
+
+**External Tool Results:**
+
+* **VirusTotal:** Detection Ratio 5/94 (Malicious: 4, Suspicious: 1, Harmless: 57, Undetected: 32), Reputation -12
+* **ThreatFox:** IoC Type ip:port, Malware Cobalt Strike, Confidence Level 100
+
+**Additional Information:**
+
+The IOC 143.92.39.50 is also associated with the domain connectotels.net, which has been flagged as malicious by various tools.
+
+**Threat Assessment:**
+
+Based on the analysis, the IOC 143.92.39.50 is considered a high-risk threat due to its association with Cobalt Strike malware and botnet command and control servers. The use of port 8880 for botnet command and control further increases the risk of malicious activities.
+
+**Mitigation Strategies:**
+
+To mitigate the risks associated with the IOC 143.92.39.50, consider the following strategies:
+
+* Monitor for suspicious activity related to Cobalt Strike malware and botnet command and control servers.
+* Implement strict access controls and network segmentation to limit lateral movement in case of a breach.
+* Regularly update and patch systems to prevent exploitation of known vulnerabilities.
+
+**Patterns across both external tools and local datasets:**
+
+Further analysis is recommended to identify patterns across both external tools and local datasets. This may involve expanding the scope of the local dataset or incorporating additional external tools to enhance detection capabilities.
+
+**MITRE ATT&CK Technique and Tactic Mappings:**
+
+Based on the provided information, the following MITRE ATT&CK technique and tactic mappings can be identified:
+
+* **T1003:** Use of Botnet
+	+ **Technique:** Command and Control (C2)
+	+ **Tactic:** Attack
+* **T1205:** Use of Malware
+	+ **Technique:** Malware Deployment
+	+ **Tactic:** Attack
+
+**Defensive Insights:**
+
+To defend against the IOC 143.92.39.50, consider the following insights:
+
+* Regularly update and patch systems to prevent exploitation of known vulnerabilities.
+* Implement strict access controls and network segmentation to limit lateral movement in case of a breach.
+* Monitor for suspicious activity related to Cobalt Strike malware and botnet command and control servers.
+
+**Conclusion:**
+
+The IOC 143.92.39.50 is an IPv4 address that falls under the category of IP Address. It is associated with the Cobalt Strike malware and has been linked to a botnet command and control server. Further analysis is required to determine the full extent of its malicious activities.
+
+===== Dataset Results =====
+Total Matches: 0
+Datasets Searched: 253

@@ -1,0 +1,99 @@
+=== IOC Analysis Report ===
+IOC: datahog.su
+Type: Domain Name
+Category: Network
+Generated: 2025-07-29 17:22:29
+
+===== Report =====
+## Professional Threat Intelligence Report
+
+### Executive Summary
+
+This report provides a comprehensive analysis of the Internet Object Identifier (IOC) `datahog.su`, identified as a botnet command and control server associated with the Scavenger malware family. The domain has been flagged for malicious activities including phishing and malware distribution, prompting significant concern from various threat intelligence sources.
+
+### 1. IOC Classification
+
+- **Type**: Domain
+- **Category**: Botnet Command and Control (C&C)
+- **Malware Association**: Scavenger (win.scavenger)
+- **Aliases**: scavenger, SCVNGR, scvngr
+
+### 2. Detailed Findings
+
+#### Technical Attributes:
+- **First Seen**: 2025-07-28 18:18:16 UTC
+- **Last Seen**: 2025-07-28 18:18:16 UTC
+
+#### Behavior Patterns:
+- Utilized for botnet command and control operations.
+- Flagged by multiple security vendors as malicious or suspicious.
+
+#### External Tool Results:
+- **VirusTotal Detection Ratio**: 18/94 (Malicious: 16, Suspicious: 2)
+- **Flagged By**: AlphaMountain.ai, ArcSight, BitDefender, among others
+
+#### Local Dataset Findings:
+- No related malware samples found in the local dataset.
+
+### 3. Threat Assessment
+
+The domain `datahog.su` has a high threat confidence score of 85/100 due to its significant detection by reputable security vendors and consistent flagging as malicious. The primary risk involves botnet command and control activities, which can lead to further malware distribution and phishing attacks.
+
+#### MITRE ATT&CK Technique and Tactic Mappings:
+- **Techniques**: Command and Control (C2)
+- **Tactics**: Command and Control
+
+### 4. Mitigation Strategies
+
+To mitigate the threat posed by `datahog.su`, the following strategies are recommended:
+
+1. **Network Monitoring**:
+   - Implement continuous monitoring for any communications with `datahog.su`.
+
+2. **Firewall Updates**:
+   - Update firewall rules to block traffic to and from this domain using threat intelligence feeds.
+
+3. **User Education**:
+   - Conduct training sessions to educate users on recognizing phishing attempts related to the Scavenger malware.
+
+4. **Threat Intelligence Integration**:
+   - Integrate threat intelligence feeds into security systems for real-time updates on malicious domains.
+
+### 5. Sources
+
+- VirusTotal Detection Report
+- ThreatFox Analysis
+- Malpedia: [Scavenger Malware](https://malpedia.caad.fkie.fraunhofer.de/details/win.scavenger)
+- Abuse.ch Sample Reference: [Bazaar Link](https://bazaar.abuse.ch/sample/c3536b736c26cd5464c6f53ce8343d3fe540eb699abd05f496dcd3b8b47c5134/)
+
+---
+
+### Final Answer
+
+The domain `datahog.su` is identified as a botnet command and control server associated with the Scavenger malware family, categorized under "botnet_cc." It has been flagged by multiple security vendors for malicious activities. VirusTotal reports a detection ratio of 18/94, indicating significant concern from various threat intelligence sources.
+
+**Local Dataset Correlation Report:**
+- **Dataset Files Containing IOC**: None
+- **Patterns Across Datasets**: No patterns identified
+
+**Threat Confidence Score**: 85/100  
+Justification: High malicious detections and consistent flagging by reputable sources.
+
+**MITRE ATT&CK Technique and Tactic Mappings**:
+- Techniques: Command and Control (C2)
+- Tactics: Command and Control
+
+**Defensive Insights**:
+- Implement network monitoring for communications with `datahog.su`.
+- Update firewall rules to block this domain using threat intelligence feeds.
+- Educate users on phishing risks related to Scavenger malware.
+
+Sources:
+- VirusTotal Detection Report
+- ThreatFox Analysis
+- Malpedia: [Scavenger Malware](https://malpedia.caad.fkie.fraunhofer.de/details/win.scavenger)
+- Abuse.ch Sample Reference: [Bazaar Link](https://bazaar.abuse.ch/sample/c3536b736c26cd5464c6f53ce8343d3fe540eb699abd05f496dcd3b8b47c5134/)
+
+===== Dataset Results =====
+Total Matches: 0
+Datasets Searched: 253

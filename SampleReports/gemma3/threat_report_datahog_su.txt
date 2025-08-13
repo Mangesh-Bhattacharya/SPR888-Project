@@ -1,0 +1,91 @@
+=== IOC Analysis Report ===
+IOC: datahog.su
+Type: Domain Name
+Category: Network
+Generated: 2025-07-29T16:10:22.365521
+
+===== Report =====
+**Threat Intelligence Report: datahog.su**
+
+**Date:** October 26, 2025
+**Prepared By:** Threat Intelligence Reporter
+**Version:** 1.0
+
+**Executive Summary:**
+
+`datahog.su` represents a significant and immediate threat. This domain functions as a Command & Control (C&C) server, heavily associated with the `Scavenger` banking trojan and Cobalt Strike, indicating a sophisticated and potentially ongoing malicious campaign. The diverse IP address distribution and negative reputation across multiple threat intelligence providers necessitate immediate blocking and heightened monitoring. The lack of local dataset matches underscores the need for external threat intelligence and proactive defense strategies.
+
+**1. Domain Analysis (datahog.su):**
+
+*   **Type & Category:** Command & Control (C&C) Server, Malicious Website
+*   **Technical Attributes:**
+    *   Domain Name: `datahog.su` (Likely a deceptive name, designed to blend in)
+    *   IP Addresses Associated: 143.92.39.50, 107.191.61.105, 103.229.124.1, 103.39.78.131, 112.213.117.52, 116.251.210.77
+    *   ASN: The IP addresses point to various ASNs, including AS152194 and CTGSERVERLIMITED-AS-AP, indicating diverse geographic origins of the C&C infrastructure. This suggests a distributed operation, complicating takedown efforts.
+    *   WHOIS Information:  (Information currently unavailable – further investigation recommended)
+*   **Reputation:** Extremely Negative. Flagged by numerous threat intelligence providers (AlphaMountain.ai, ArcSight, BitDefender, Certego, CyRadar, ESET, Fortinet, G-Data, Gridinsoft, Kaspersky, Lionic, SOCRadar, Sophos, Trustwave, Viettel) as malicious and suspicious. The overall VirusTotal detection ratio of 18/94 (16 malicious, 2 suspicious) confirms this.
+
+**2. Malware Associations:**
+
+*   **Primary Malware:** `Scavenger` (win.scavenger) – Identified by ThreatFox and linked via Malpedia. This is a known banking trojan, designed to steal credentials and financial information.
+*   **Secondary Malware:** Cobalt Strike (win.cobalt_strike) – Detected via ThreatFox and IP address analysis. Cobalt Strike is a widely used penetration testing and adversary emulation tool, frequently employed by cybercriminals. Its presence indicates a sophisticated and potentially ongoing attack.
+
+**3. Threat Campaign & Campaign Identification:**
+
+*   The presence of both `Scavenger` and Cobalt Strike strongly suggests a coordinated campaign. The C&C server is likely being used to deploy and control infected systems, leveraging the banking trojan for financial theft.
+*   The diverse IP addresses associated with the C&C server indicate a distributed infrastructure, potentially masking the true origin of the attack and making it more resilient to takedown attempts.
+*   **Campaign Identification:**  Based on the observed indicators, we classify this as a “Banking Trojan Distribution & Control” campaign, utilizing Cobalt Strike for reconnaissance, deployment, and potentially lateral movement.
+
+**4. Historical Sightings & Timeline:**
+
+*   **First Seen:** 2025-07-28 18:18:16 UTC (ThreatFox)
+*   **Last Seen:** 2025-07-28 18:18:16 UTC (ThreatFox) - This indicates a potentially short-lived campaign or a dormant C&C server. However, the presence of the IP addresses in the misp.text_ip-dst.ADMIN dataset suggests ongoing activity.
+*   **Timeline Analysis:** The short timeframe of observation warrants further investigation. It could be a temporary C&C node, a test environment, or a persistent operation.
+
+**5. Behavior Patterns:**
+
+*   **Botnet C&C:** The domain’s function is clearly that of a C&C server, facilitating communication between infected hosts and the attackers.
+*   **Banking Trojan Deployment:** The association with `Scavenger` indicates the primary objective is likely financial theft through credential harvesting and banking fraud.
+*   **Penetration Testing Tool:** The use of Cobalt Strike suggests the attackers are also conducting reconnaissance and potentially simulating attacks. This could be for intelligence gathering or to test defenses.
+*   **Command & Control Communication:**  Analysis of network traffic (if available) would be beneficial to understand the exact communication protocols and data exchanged between the infected hosts and the C&C server.
+
+**6. Local Dataset Correlation Report:**
+
+| Dataset File          | Line Number(s) | Contextual Information |
+| ------------------ | --------------------- | ----------------------- |
+| 253_malware_signatures | N/A                | No matches found.  |
+
+*   **Note:** The absence of matches in the 253 local dataset files is significant. This suggests that the IOC is not part of a commonly tracked local dataset.  This reinforces the need for external threat intelligence and proactive defense strategies.  It also indicates a potentially novel or rapidly evolving threat.
+
+**7. Conclusion & Recommendations:**
+
+`datahog.su` represents a significant and immediate threat. Given its association with known malware (Scavenger) and its C&C function, it should be immediately blocked at the firewall and network level. Organizations should monitor for any related network traffic and investigate any potential infections.  Further investigation into the infrastructure supporting `datahog.su` is recommended, including attempting to identify the origin of the C&C server. Regular updates to threat intelligence feeds are crucial to maintain awareness of evolving threats.
+
+**Recommendations:**
+
+*   **Immediate Blocking:** Block all traffic to `datahog.su` at the firewall and network level.
+*   **Network Monitoring:** Implement enhanced network monitoring to detect any communication with this domain or related IP addresses.
+*   **Endpoint Detection and Response (EDR):** Deploy EDR solutions to detect and block malware execution and lateral movement attempts.
+*   **Threat Hunting:** Conduct proactive threat hunting activities to identify any potentially compromised systems.
+*   **User Awareness Training:** Educate users about the risks of phishing and malicious websites.
+*   **Intelligence Sharing:** Share this IOC with relevant security communities and information-sharing groups.
+
+**Sources:**
+
+*   VirusTotal: [https://www.virustotal.com/](https://www.virustotal.com/)
+*   ThreatFox: (Provided data)
+*   Malpedia: [https://malpedia.caad.fkie.fraunhofer.de/](https://malpedia.caad.fkie.fraunhofer.de/)
+*   Censys: [https://search.censys.io/](https://search.censys.io/)
+*   misp.text_ip-dst.ADMIN datasets (Provided data)
+
+**Threat Confidence Score: 95/100**
+
+**Justification:** The convergence of multiple high-confidence indicators – strong malware associations (Scavenger and Cobalt Strike), negative reputation across numerous threat intelligence providers, the observed behavior of a C&C server, and the lack of local dataset matches – results in a very high threat confidence score. The short timeframe of observation and the distributed nature of the C&C infrastructure add to the overall risk.
+
+---
+
+**Note:** This report is based on the information provided. Further investigation and analysis are recommended to fully understand the scope and impact of this threat.
+
+===== Dataset Results =====
+Total Matches: 0
+Datasets Searched: 253
