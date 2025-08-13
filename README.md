@@ -27,7 +27,7 @@ Given Indicators of Compromise (IoCs) — **IP addresses, domains, and file hash
 - **Editor:** Visual Studio Code (recommended).  
 - **Datasets:** Files included in the project folder.
 
-> The app is contained in `spr888c.py` and expects the dataset files to live in the same project directory (or a path you configure).
+> The app is contained in `spr888.py` and expects the dataset files to live in the same project directory (or a path you configure).
 
 ---
 
@@ -35,7 +35,7 @@ Given Indicators of Compromise (IoCs) — **IP addresses, domains, and file hash
 
 ### 1) Open the project in VS Code
 - **File → Open Folder…** and select the folder containing:
-  - `spr888c.py`
+  - `spr888.py`
   - Dataset files (included)
 
 ### 2) Open a **Command Prompt** terminal in VS Code
@@ -89,7 +89,7 @@ export TF_API_KEY="YOUR_TF_API_KEY"
 ```
 
 ### 6) Point the app at your datasets
-Open `spr888c.py` and set the dataset folder path:
+Open `spr888.py` and set the dataset folder path:
 ```python
 # Example Windows path (use a raw string for backslashes)
 DATASET_PATH = r"D:\Projects\SPR888\Datasets"
@@ -97,11 +97,11 @@ DATASET_PATH = r"D:\Projects\SPR888\Datasets"
 # Example macOS/Linux path
 # DATASET_PATH = "/Users/you/Projects/SPR888/Datasets"
 ```
-> If your datasets live **beside** `spr888c.py`, you can keep the default or set `DATASET_PATH` to that folder.
+> If your datasets live **beside** `spr888.py`, you can keep the default or set `DATASET_PATH` to that folder.
 
 ### 7) Run the app
 ```cmd
-python -m streamlit run spr888c.py
+python -m streamlit run spr888.py
 ```
 Your browser should open to **http://localhost:8501** automatically.
 
@@ -138,7 +138,7 @@ Use a public, benign example such as `8.8.8.8` in **Single IoC Analysis** to ver
 
 ```
 project-root/
-├─ spr888c.py                # Streamlit application
+├─ spr888.py                # Streamlit application
 ├─ datasets/                 # Local datasets (example folder name)
 ├─ .env                      # (optional) API keys; never commit to VCS
 └─ README.md                 # This file
@@ -160,7 +160,7 @@ project-root/
 - **Module not found (e.g., streamlit):** Re-run dependency installation in the **active** virtual environment.
 - **Dataset not found:** Verify `DATASET_PATH` and folder contents; ensure paths are correct on your OS.
 - **Port in use/browser won’t open:** Run on a different port:  
-  `python -m streamlit run spr888c.py --server.port 8502`
+  `python -m streamlit run spr888.py --server.port 8502`
 - **API auth errors:** Ensure environment variables are set in the **same terminal** you use to run Streamlit (or use `.env`).
 
 ---
