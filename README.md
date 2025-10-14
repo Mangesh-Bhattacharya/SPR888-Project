@@ -1,4 +1,5 @@
 # Threat Intelligence Automated Research and Analysis AI Tool
+<img width="1918" height="938" alt="image" src="https://github.com/user-attachments/assets/b551bc48-a149-4239-9602-15facda42739" />
 
 A Streamlit web application for automated **threat intelligence research and analysis**.  
 Given Indicators of Compromise (IoCs) — **IP addresses, domains, and file hashes** — the app queries **VirusTotal** and **ThreatFox**, and cross-references **local datasets** (included) to surface matches with surrounding context. It supports **single IoC lookups** and **batch analysis** with results available for **download**.
