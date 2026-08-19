@@ -177,7 +177,7 @@ def is_private_ioc(ioc: str) -> bool:
     ioc = ioc.strip().lower()
     
     # Check for localhost domains
-    if ioc in ["localhost", "127.0.0.1", "::1", "0.0.0.0"]:
+    if ioc in ["localhost", "127.0.0.1", "::1", "0.0.0.0"]:  # nosec B104 -- string comparison, not a socket bind
         return True
         
     # Check for .local domains
@@ -268,7 +268,7 @@ def query_threatfox(ioc_type: str, ioc_value: str) -> str:
     data = {"query": "search_ioc", "search_term": ioc_value, "exact_match": False}
 
     try:
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=data, timeout=10)
         result = response.json()
 
         if result.get("query_status") == "ok" and result.get("data"):
@@ -324,7 +324,7 @@ def query_virustotal(ioc_type: str, ioc_value: str) -> str:
 
     headers = {"accept": "application/json", "x-apikey": vt_api_key}
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
         if response.status_code != 200:
             return f"Error {response.status_code}: {response.text}"
 
